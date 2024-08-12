@@ -2,10 +2,12 @@ import requests
 from src.db_manager import DBManager
 import time
 
-
 def get_vacancies(company_id):
+    """
+    Получает список вакансий для заданной компании с API hh.ru.
+    """
     print(f"Поиск вакансий для компании ID: {company_id}")
-    url = f"https://api.hh.ru/vacancies"
+    url = "https://api.hh.ru/vacancies"
     params = {
         "employer_id": company_id,
         "per_page": 100,
@@ -34,8 +36,16 @@ def get_vacancies(company_id):
     print(f"Всего найдено вакансий: {len(all_vacancies)}")
     return all_vacancies
 
-
 def main():
+    """
+    Основная функция программы.
+
+    Эта функция выполняет следующие действия:
+    1. Создает экземпляр DBManager для работы с базой данных.
+    2. Получает вакансии для заданных компаний с API hh.ru.
+    3. Сохраняет информацию о компаниях и вакансиях в базу данных.
+    4. Выполняет различные запросы к базе данных и выводит результаты.
+    """
     print("Запуск основной функции")
     db_manager = DBManager()
     print("DBManager экземпляр создан")
@@ -84,7 +94,7 @@ def main():
 
     print("\nПодсчет средней зарплаты:")
     avg_salary = db_manager.get_avg_salary()
-    print(f"AСредняя зарплата: {avg_salary:.2f} RUB")
+    print(f"Средняя зарплата: {avg_salary:.2f} RUB")
 
     print("\nПолучение вакансий с зарплатами выше средней:")
     high_salary_vacancies = db_manager.get_vacancies_with_higher_salary()
@@ -99,7 +109,6 @@ def main():
     print("Closing database connection")
     db_manager.close()
     print("Main function completed")
-
 
 if __name__ == "__main__":
     main()
