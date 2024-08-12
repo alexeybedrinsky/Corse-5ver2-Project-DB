@@ -1,25 +1,26 @@
 import os
 from configparser import ConfigParser
 
-
 def config(filename='database.ini', section='postgresql'):
-    # Get the absolute path of the current script
+    """
+    Считывает конфигурацию базы данных из указанного файла.
+
+    Эта функция читает файл конфигурации (по умолчанию 'database.ini')
+    и возвращает параметры подключения к базе данных в виде словаря.
+    """
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    # Go up one directory to reach the project root
     project_root = os.path.dirname(script_dir)
-    # Construct the full path to database.ini
     filepath = os.path.join(project_root, filename)
 
     print(f"Attempting to read config file: {filepath}")
 
-    # create a parser
+    # создание парсера
     parser = ConfigParser()
-    # read config file
+    # четние конфигнутого файла
     parser.read(filepath)
 
     print(f"Sections found in the config file: {parser.sections()}")
 
-    # get section, default to postgresql
     db = {}
     if parser.has_section(section):
         params = parser.items(section)
@@ -29,3 +30,5 @@ def config(filename='database.ini', section='postgresql'):
         raise Exception(f'Section {section} not found in the {filepath} file')
 
     return db
+
+
