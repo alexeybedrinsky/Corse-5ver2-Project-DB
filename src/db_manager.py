@@ -4,7 +4,16 @@ import json
 from src.config import config
 
 class DBManager:
+    """
+    Класс для управления подключением к базе данных и выполнения операций с данными.
+    Этот класс обеспечивает интерфейс для взаимодействия с базой данных,
+    включая создание таблиц, вставку данных и выполнение различных запросов.
+    """
+
     def __init__(self):
+        """
+        Инициализирует подключение к базе данных и создает необходимые таблицы.
+        """
         try:
             params = config()
             print(f"Connection parameters: host={params.get('host')}, dbname={params.get('database')}, user={params.get('user')}")
@@ -17,6 +26,9 @@ class DBManager:
             raise
 
     def create_tables(self):
+        """
+        Создает таблицы employers и vacancies, если они еще не существуют.
+        """
         with self.conn.cursor() as cur:
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS employers (
@@ -39,6 +51,9 @@ class DBManager:
         print("Tables created successfully")
 
     def insert_employer(self, name, hh_id):
+        """
+        Вставляет информацию о работодателе в базу данных.
+        """
         with self.conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO employers (name, hh_id) VALUES (%s, %s) ON CONFLICT (hh_id) DO NOTHING RETURNING id",
@@ -47,6 +62,9 @@ class DBManager:
             return cur.fetchone()[0] if cur.rowcount > 0 else None
 
     def insert_vacancy(self, name, employer_id, salary, url, requirement, responsibility):
+        """
+        Вставляет информацию о вакансии в базу данных.
+        """
         with self.conn.cursor() as cur:
             cur.execute(
                 """
@@ -57,6 +75,9 @@ class DBManager:
             )
 
     def get_companies_and_vacancies_count(self):
+        """
+        Получает список всех компаний и количество вакансий у каждой компании.
+        """
         try:
             with self.conn.cursor() as cur:
                 cur.execute("""
@@ -72,6 +93,9 @@ class DBManager:
             return []
 
     def get_all_vacancies(self):
+        """
+        Получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию.
+        """
         try:
             with self.conn.cursor() as cur:
                 cur.execute("""
@@ -85,6 +109,9 @@ class DBManager:
             return []
 
     def get_avg_salary(self):
+        """
+        Получает среднюю зарплату по вакансиям.
+        """
         try:
             with self.conn.cursor() as cur:
                 cur.execute("""
@@ -98,6 +125,9 @@ class DBManager:
             return None
 
     def get_vacancies_with_higher_salary(self):
+        """
+        Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям.
+        """
         try:
             with self.conn.cursor() as cur:
                 cur.execute("""
@@ -117,6 +147,9 @@ class DBManager:
             return []
 
     def get_vacancies_with_keyword(self, keyword):
+        """
+        Получает список всех вакансий, в названии или описании которых содержатся переданные в метод слова.
+        """
         try:
             with self.conn.cursor() as cur:
                 cur.execute("""
@@ -131,7 +164,9 @@ class DBManager:
             return []
 
     def close(self):
+        """
+        Закрывает соединение с базой данных.
+        """
         if self.conn:
             self.conn.close()
             print("Database connection closed")
-
