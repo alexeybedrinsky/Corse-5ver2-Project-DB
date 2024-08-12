@@ -4,6 +4,9 @@ import os
 import time
 
 def fetch_vacancies(query, area, page, per_page):
+    """
+    Получает список вакансий с API hh.ru.
+    """
     url = 'https://api.hh.ru/vacancies'
     params = {
         'text': query,
@@ -21,6 +24,9 @@ def fetch_vacancies(query, area, page, per_page):
         return []
 
 def fetch_employers(vacancies):
+    """
+    Получает информацию о работодателях для списка вакансий.
+    """
     employers = {}
     for vacancy in vacancies:
         employer_id = vacancy.get('employer', {}).get('id')
@@ -36,6 +42,9 @@ def fetch_employers(vacancies):
     return employers
 
 def save_to_json(data, filename):
+    """
+    Сохраняет данные в JSON файл
+    """
     current_dir = os.path.dirname(__file__)
     json_path = os.path.join(current_dir, filename)
     try:
@@ -53,3 +62,4 @@ if __name__ == "__main__":
         save_to_json(employers, 'employers.json')
     else:
         print("Не удалось получить вакансии. Проверьте параметры запроса.")
+
